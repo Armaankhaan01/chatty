@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import './Login.scss';
-// import { authService } from '@services/api/auth/auth.service';
-// import useLocalStorage from '@hooks/useLocalStorage';
-// import { Utils } from '@services/utils/utils.service';
-// import useSessionStorage from '@hooks/useSessionStorage';
+import { authService } from '../../../services/api/auth/auth.service';
+import useLocalStorage from '../../../hooks/useLocalStorage';
+import { Utils } from '../../../services/utils/utils.service';
+import useSessionStorage from '../../../hooks/useSessionStorage';
 import Input from '../../../components/input/Input';
 import Button from '../../../components/button/Button';
 
@@ -14,51 +14,51 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-  // const [loading, setLoading] = useState(false);
-  // const [hasError, setHasError] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState('');
-  // const [alertType, setAlertType] = useState('');
-  // const [user, setUser] = useState();
-  // const [setStoredUsername] = useLocalStorage('username', 'set');
-  // const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
-  // const [pageReload] = useSessionStorage('pageReload', 'set');
-  // const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
+  const [user, setUser] = useState();
+  const [setStoredUsername] = useLocalStorage('username', 'set');
+  const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
+  const [pageReload] = useSessionStorage('pageReload', 'set');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // const loginUser = async (event) => {
-  //   setLoading(true);
-  //   event.preventDefault();
-  //   try {
-  //     const result = await authService.signIn({
-  //       username,
-  //       password
-  //     });
-  //     setLoggedIn(keepLoggedIn);
-  //     setStoredUsername(username);
-  //     setHasError(false);
-  //     setAlertType('alert-success');
-  //     // Utils.dispatchUser(result, pageReload, dispatch, setUser);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     setHasError(true);
-  //     setAlertType('alert-error');
-  //     setErrorMessage(error?.response?.data.message);
-  //   }
-  // };
+  const loginUser = async (event) => {
+    setLoading(true);
+    event.preventDefault();
+    try {
+      const result = await authService.signIn({
+        username,
+        password
+      });
+      setLoggedIn(keepLoggedIn);
+      setStoredUsername(username);
+      setHasError(false);
+      setAlertType('alert-success');
+      Utils.dispatchUser(result, pageReload, dispatch, setUser);
+    } catch (error) {
+      setLoading(false);
+      setHasError(true);
+      setAlertType('alert-error');
+      setErrorMessage(error?.response?.data.message);
+    }
+  };
 
-  // useEffect(() => {
-  //   if (loading && !user) return;
-  //   if (user) navigate('/app/social/streams');
-  // }, [loading, user, navigate]);
+  useEffect(() => {
+    if (loading && !user) return;
+    if (user) navigate('/app/social/streams');
+  }, [loading, user, navigate]);
 
   return (
     <div className="auth-inner">
-      {/* {hasError && errorMessage && (
+      {hasError && errorMessage && (
         <div className={`alerts ${alertType}`} role="alert">
           {errorMessage}
         </div>
-      )} */}
-      <form className="auth-form">
+      )}
+      <form className="auth-form" onSubmit={loginUser}>
         <div className="form-input-container">
           <Input
             id="username"
@@ -67,7 +67,7 @@ const Login = () => {
             value={username}
             labelText="Username"
             placeholder="Enter Username"
-            // style={{ border: `${hasError ? '1px solid #fa9b8a' : ''}` }}
+            style={{ border: `${hasError ? '1px solid #fa9b8a' : ''}` }}
             handleChange={(event) => setUsername(event.target.value)}
           />
           <Input
@@ -77,7 +77,7 @@ const Login = () => {
             value={password}
             labelText="Password"
             placeholder="Enter Password"
-            // style={{ border: `${hasError ? '1px solid #fa9b8a' : ''}` }}
+            style={{ border: `${hasError ? '1px solid #fa9b8a' : ''}` }}
             handleChange={(event) => setPassword(event.target.value)}
           />
           <label className="checkmark-container" htmlFor="checkbox">
@@ -91,7 +91,11 @@ const Login = () => {
             Keep me signed in
           </label>
         </div>
-        <Button label={`${'SIGNIN'}`} className="auth-button button" disabled={!username || !password} />
+        <Button
+          label={`${loading ? 'SIGNIN IN PROGRESS...' : 'SIGNIN'}`}
+          className="auth-button button"
+          disabled={!username || !password}
+        />
 
         <Link to={'/forgot-password'}>
           <span className="forgot-password">

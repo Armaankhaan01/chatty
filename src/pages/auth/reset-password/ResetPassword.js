@@ -3,12 +3,9 @@ import { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import Input from '../../../components/input/Input';
 import Button from '../../../components/button/Button';
-import {
-  Link
-  //  useSearchParams
-} from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import backgroundImage from '../../../assets/images/background.jpg';
-// import { authService } from '@services/api/auth/auth.service';
+import { authService } from '../../../services/api/auth/auth.service';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -17,20 +14,20 @@ const ResetPassword = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
-  // const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const resetPassword = async (event) => {
     setLoading(true);
     event.preventDefault();
     try {
-      // const body = { password, confirmPassword };
-      // const response = await authService.resetPassword(searchParams.get('token'), body);
+      const body = { password, confirmPassword };
+      const response = await authService.resetPassword(searchParams.get('token'), body);
       setLoading(false);
       setPassword('');
       setConfirmPassword('');
       setShowAlert(false);
       setAlertType('alert-success');
-      // setResponseMessage(response?.data?.message);
+      setResponseMessage(response?.data?.message);
     } catch (error) {
       setAlertType('alert-error');
       setLoading(false);

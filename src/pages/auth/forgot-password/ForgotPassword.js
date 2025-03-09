@@ -5,7 +5,7 @@ import Button from '../../../components/button/Button';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../../../assets/images/background.jpg';
 import './ForgotPassword.scss';
-// import { authService } from '@services/api/auth/auth.service';
+import { authService } from '../../../services/api/auth/auth.service';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -18,12 +18,12 @@ const ForgotPassword = () => {
     setLoading(true);
     event.preventDefault();
     try {
-      // const response = await authService.forgotPassword(email);
+      const response = await authService.forgotPassword(email);
       setLoading(false);
       setEmail('');
       setShowAlert(false);
       setAlertType('alert-success');
-      // setResponseMessage(response?.data?.message);
+      setResponseMessage(response?.data?.message);
     } catch (error) {
       setAlertType('alert-error');
       setLoading(false);
