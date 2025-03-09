@@ -1,12 +1,12 @@
-import Input from '../../../components/input/Input';
-import Button from '../../../components/button/Button';
+import Input from '@components/input/Input';
+import Button from '@components/button/Button';
 import './Register.scss';
 import { useEffect, useState } from 'react';
-import { Utils } from '../../../services/utils/utils.service';
-import { authService } from '../../../services/api/auth/auth.service';
+import { Utils } from '@services/utils/utils.service';
+import { authService } from '@services/api/auth/auth.service';
 import { useNavigate } from 'react-router-dom';
-import useLocalStorage from '../../../hooks/useLocalStorage';
-import useSessionStorage from '../../../hooks/useSessionStorage';
+import useLocalStorage from '@hooks/useLocalStorage';
+import useSessionStorage from '@hooks/useSessionStorage';
 import { useDispatch } from 'react-redux';
 
 const Register = () => {

@@ -1,5 +1,5 @@
-import { addUser, clearUser } from '../../redux-toolkit/reducers/user/user.reducer';
-import { avatarColors } from '../../services/utils/static.data';
+import { addUser, clearUser } from '@redux/reducers/user/user.reducer';
+import { avatarColors } from '@services/utils/static.data';
 import { floor, random } from 'lodash';
 
 export class Utils {

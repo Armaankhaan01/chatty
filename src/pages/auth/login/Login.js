@@ -3,12 +3,12 @@ import { FaArrowRight } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './Login.scss';
-import { authService } from '../../../services/api/auth/auth.service';
-import useLocalStorage from '../../../hooks/useLocalStorage';
-import { Utils } from '../../../services/utils/utils.service';
-import useSessionStorage from '../../../hooks/useSessionStorage';
-import Input from '../../../components/input/Input';
-import Button from '../../../components/button/Button';
+import { authService } from '@services/api/auth/auth.service';
+import useLocalStorage from '@hooks/useLocalStorage';
+import { Utils } from '@services/utils/utils.service';
+import useSessionStorage from '@hooks/useSessionStorage';
+import Input from '@components/input/Input';
+import Button from '@components/button/Button';
 
 const Login = () => {
   const [username, setUsername] = useState('');
