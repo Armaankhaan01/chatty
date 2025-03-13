@@ -35,6 +35,7 @@ export class Utils {
 
   static clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedIn }) {
     dispatch(clearUser());
+    // dispatch clear notification action
     deleteStorageUsername();
     deleteSessionPageReload();
     setLoggedIn(false);
