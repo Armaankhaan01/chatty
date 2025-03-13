@@ -1,4 +1,5 @@
 import { addUser, clearUser } from '@redux/reducers/user/user.reducer';
+import { APP_ENVIRONMENT } from '@services/axios';
 import { avatarColors } from '@services/utils/static.data';
 import { floor, random } from 'lodash';
 
@@ -39,6 +40,16 @@ export class Utils {
     deleteStorageUsername();
     deleteSessionPageReload();
     setLoggedIn(false);
+  }
+
+  static appEnvironment() {
+    if (APP_ENVIRONMENT === 'local') {
+      return 'DEV';
+    } else if (APP_ENVIRONMENT === 'development') {
+      return 'DEV';
+    } else if (APP_ENVIRONMENT === 'staging') {
+      return 'STG';
+    }
   }
 
   static appImageUrl(version, id) {

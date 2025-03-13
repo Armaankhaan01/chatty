@@ -1,7 +1,20 @@
 import axios from 'axios';
 
-// const BASE_URL = `${process.env.REACT_APP_BASE_ENDPOINT}/api/v1`;
-const BASE_URL = `http://localhost:5000/api/v1`;
+export let BASE_ENDPOINT = '';
+
+// when developing locally, change this value to local
+export const APP_ENVIRONMENT = process.env.REACT_APP_ENVIRONMENT;
+
+if (APP_ENVIRONMENT === 'local') {
+  BASE_ENDPOINT = 'http://localhost:5000';
+} else if (APP_ENVIRONMENT === 'development') {
+  BASE_ENDPOINT = 'http://localhost:5000';
+} else if (APP_ENVIRONMENT === 'staging') {
+  BASE_ENDPOINT = 'https://chatty-backend.arkarman.xyz/';
+} else if (APP_ENVIRONMENT === 'production') {
+  BASE_ENDPOINT = 'https://chatty-backend.arkarman.xyz/>';
+}
+const BASE_URL = `${BASE_ENDPOINT}/api/v1`;
 
 export default axios.create({
   baseURL: BASE_URL,
