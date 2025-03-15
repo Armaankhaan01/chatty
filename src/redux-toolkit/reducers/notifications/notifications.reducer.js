@@ -7,7 +7,6 @@ import { cloneDeep, uniqBy } from 'lodash';
 
 const initialState = [];
 let list = [];
-const indian = [];
 const toastIcons = [
   { success: checkIcon, color: '#5cb85c' },
   { error: errorIcon, color: '#d9534f' },
