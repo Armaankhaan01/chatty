@@ -2,11 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import './Toast.scss';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
+import { useDispatch } from 'react-redux';
+import { Utils } from '@services/utils/utils.service';
 
 const Toast = (props) => {
   const { toastList, position, autoDelete, autoDeleteTime = 2000 } = props;
   const [list, setList] = useState(toastList);
   const listData = useRef([]);
+  const dispatch = useDispatch();
 
   const deleteToast = useCallback(
     (id) => {
@@ -18,10 +21,10 @@ const Toast = (props) => {
       setList([...listData.current]);
       if (!listData.current.length) {
         list.length = 0;
-        // 1. dispatch notification
+        Utils.dispatchClearNotification(dispatch);
       }
     },
-    [list]
+    [list, dispatch]
   );
 
   useEffect(() => {

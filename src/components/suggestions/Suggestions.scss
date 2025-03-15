@@ -8,9 +8,9 @@
 .suggestions-list-container {
   display: grid;
   grid:
-    "suggestions-header"
-    "hr"
-    "suggestions-list";
+    'suggestions-header'
+    'hr'
+    'suggestions-list';
 
   .suggestions-header {
     grid-area: suggestions-header;
@@ -41,8 +41,8 @@
     padding: 0 20px;
     grid-area: suggestions-list;
     grid:
-      "suggestions"
-      "view-more";
+      'suggestions'
+      'view-more';
 
     .suggestions {
       max-height: 480px;

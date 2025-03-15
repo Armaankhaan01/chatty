@@ -40,10 +40,14 @@ const Header = () => {
   const onDeleteNotification = () => {};
 
   const onLogout = async () => {
-    setLoggedIn(false);
-    Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedIn });
-    await userService.logoutUser();
-    navigate('/');
+    try {
+      setLoggedIn(false);
+      Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedIn });
+      await userService.logoutUser();
+      navigate('/');
+    } catch (error) {
+      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+    }
   };
 
   useEffectOnce(() => {

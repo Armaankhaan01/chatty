@@ -19,7 +19,7 @@
   }
 
   &::before {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     z-index: -1;
@@ -59,7 +59,8 @@
         }
 
         li button,
-        .forgot-password, .reset-password {
+        .forgot-password,
+        .reset-password {
           display: block;
           text-decoration: none;
           padding: 15px;

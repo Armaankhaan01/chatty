@@ -4,9 +4,10 @@ import { AppRouter } from './routes';
 import './App.scss';
 import { socketService } from '@services/socket/socket.service';
 import Toast from '@components/toast/Toast';
+import { useSelector } from 'react-redux';
 
 const App = () => {
-  const notifications = [];
+  const notifications = useSelector((state) => state.notifications);
   useEffect(() => {
     socketService.setupSocketConnection();
   }, []);
