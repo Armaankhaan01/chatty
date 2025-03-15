@@ -2,13 +2,14 @@ import Streams from '@pages/social/streams/Streams';
 import { AuthTabs, ForgotPassword, ResetPassword } from './pages/auth';
 import { useRoutes } from 'react-router-dom';
 import Social from '@pages/social/Social';
-import Chat from '@pages/chat/Chat';
-import People from '@pages/people/People';
-import Followers from '@pages/followers/Followers';
-import Following from '@pages/following/Following';
-import Photos from '@pages/photos/Photos';
-import Notifications from '@pages/notifications/Notifications';
-import Profile from '@pages/profile/Profile';
+import Chat from '@pages/social/chat/Chat';
+import People from '@pages/social/people/People';
+import Followers from '@pages/social/followers/Followers';
+import Following from '@pages/social/following/Following';
+import Photos from '@pages/social/photos/Photos';
+import Notifications from '@pages/social/notifications/Notifications';
+import Profile from '@pages/social/profile/Profile';
+import ProtectedRoute from '@pages/ProtectedRoute';
 
 export const AppRouter = () => {
   const elements = useRoutes([
@@ -26,7 +27,11 @@ export const AppRouter = () => {
     },
     {
       path: '/app/social',
-      element: <Social />,
+      element: (
+        <ProtectedRoute>
+          <Social />
+        </ProtectedRoute>
+      ),
       children: [
         { path: 'streams', element: <Streams /> },
         { path: 'chat/messages', element: <Chat /> },

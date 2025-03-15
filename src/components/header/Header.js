@@ -24,8 +24,8 @@ const Header = () => {
   const settingsRef = useRef(null);
   const notificationRef = useRef(null);
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+
   const [isMessageActive, setIsMessageActive] = useDetectOutsideClick(messageRef, false);
   const [isNotificationActive, setIsNotificationActive] = useDetectOutsideClick(notificationRef, false);
   const [isSettingsActive, setIsSettingsActive] = useDetectOutsideClick(settingsRef, false);
