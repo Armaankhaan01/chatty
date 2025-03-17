@@ -6,7 +6,7 @@
 
   &-content {
     display: grid;
-    grid-template-areas: "post suggestions";
+    grid-template-areas: 'post suggestions';
     grid-template-columns: 1fr 330px;
     grid-template-rows: 1fr;
     column-gap: 20px;

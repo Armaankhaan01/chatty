@@ -6,7 +6,7 @@
 
   .toast-notification {
     display: grid;
-    grid-template-areas: "image message cancelBtn";
+    grid-template-areas: 'image message cancelBtn';
     grid-template-columns: 30px 1fr 10px;
     column-gap: 10px;
     background: var(--white-1);
@@ -43,7 +43,7 @@
     &-content {
       grid-area: content;
       display: grid;
-      grid-template-areas: "image message";
+      grid-template-areas: 'image message';
       grid-template-columns: 30px 1fr;
       column-gap: 10px;
     }
