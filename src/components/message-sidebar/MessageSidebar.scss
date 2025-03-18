@@ -46,7 +46,7 @@
         background: var(--white-1);
 
         &-container {
-          overflow-y: scroll;
+          overflow-y: auto;
           height: 100vh;
 
           .message-sub-card {
