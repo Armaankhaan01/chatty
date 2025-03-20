@@ -43,7 +43,7 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
     image: '',
     video: ''
   });
-  const [disable, setDisable] = useState(false);
+  const [disable, setDisable] = useState(true);
 
   const maxNumberOfCharacters = 500;
 
@@ -272,6 +272,7 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
                   className={`${color === '#ffffff' ? 'whiteColorBorder' : ''}`}
                   style={{ backgroundColor: `${color}` }}
                   onClick={() => {
+                    PostUtils.positionCursor('editable');
                     selectBackground(color);
                   }}
                 ></li>
