@@ -46,7 +46,7 @@
 
     .suggestions {
       max-height: 480px;
-      overflow-y: scroll;
+      overflow-y: auto;
       grid-area: suggestions;
       display: grid;
       color: var(--white);
