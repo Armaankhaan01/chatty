@@ -3,7 +3,7 @@ import { clearPost, updatePostItem } from '@redux/reducers/post/post.reducer';
 import { postService } from '@services/api/post/post.service';
 import { socketService } from '@services/socket/socket.service';
 import { Utils } from '@services/utils/utils.service';
-import { cloneDeep, findIndex, remove } from 'lodash';
+import { cloneDeep, find, findIndex, remove } from 'lodash';
 
 export class PostUtils {
   static selectBackground(bgColor, postData, setTextAreaBackground, setPostData) {
@@ -17,21 +17,9 @@ export class PostUtils {
     setPostData(postData);
   }
 
-  static dispatchNotification(message, type, setApiResponse, setLoading, dispatch) {
-    setApiResponse(type);
-    setLoading(false);
-    Utils.dispatchNotification(message, type, dispatch);
-  }
-
-  static positionCursor(elementId) {
-    const element = document.getElementById(`${elementId}`);
-    const selection = window.getSelection();
-    const range = document.createRange();
-    selection.removeAllRanges();
-    range.selectNodeContents(element);
-    range.collapse(false);
-    selection.addRange(range);
-    element.focus();
+  static closePostModal(dispatch) {
+    dispatch(closeModal());
+    dispatch(clearPost());
   }
 
   static clearImage(postData, post, inputRef, dispatch, setSelectedPostImage, setPostImage, setPostData) {
@@ -55,11 +43,6 @@ export class PostUtils {
     );
   }
 
-  static closePostModal(dispatch) {
-    dispatch(closeModal());
-    dispatch(clearPost());
-  }
-
   static postInputData(imageInputRef, postData, post, setPostData) {
     setTimeout(() => {
       if (imageInputRef?.current) {
@@ -71,6 +54,12 @@ export class PostUtils {
         PostUtils.positionCursor('editable');
       }
     });
+  }
+
+  static dispatchNotification(message, type, setApiResponse, setLoading, dispatch) {
+    setApiResponse(type);
+    setLoading(false);
+    Utils.dispatchNotification(message, type, dispatch);
   }
 
   static async sendPostWithFileRequest(type, postData, imageInputRef, setApiResponse, setLoading, dispatch) {
@@ -91,12 +80,54 @@ export class PostUtils {
     }
   }
 
+  static async sendUpdatePostWithFileRequest(type, postId, postData, setApiResponse, setLoading, dispatch) {
+    try {
+      const response =
+        type === 'image'
+          ? await postService.updatePostWithImage(postId, postData)
+          : await postService.updatePostWithVideo(postId, postData);
+      if (response) {
+        PostUtils.dispatchNotification(response.data.message, 'success', setApiResponse, setLoading, dispatch);
+        setTimeout(() => {
+          setApiResponse('success');
+          setLoading(false);
+        }, 3000);
+        PostUtils.closePostModal(dispatch);
+      }
+    } catch (error) {
+      PostUtils.dispatchNotification(error.response.data.message, 'error', setApiResponse, setLoading, dispatch);
+    }
+  }
+
+  static async sendUpdatePostRequest(postId, postData, setApiResponse, setLoading, dispatch) {
+    const response = await postService.updatePost(postId, postData);
+    if (response) {
+      PostUtils.dispatchNotification(response.data.message, 'success', setApiResponse, setLoading, dispatch);
+      setTimeout(() => {
+        setApiResponse('success');
+        setLoading(false);
+      }, 3000);
+      PostUtils.closePostModal(dispatch);
+    }
+  }
+
   static checkPrivacy(post, profile, following) {
     const isPrivate = post?.privacy === 'Private' && post?.userId === profile?._id;
     const isPublic = post?.privacy === 'Public';
     const isFollower =
       post?.privacy === 'Followers' && Utils.checkIfUserIsFollowed(following, post?.userId, profile?._id);
     return isPrivate || isPublic || isFollower;
+  }
+
+  static positionCursor(elementId) {
+    const element = document.getElementById(`${elementId}`);
+    const selection = window.getSelection();
+    const range = document.createRange();
+    selection.removeAllRanges();
+    range.selectNodeContents(element);
+    range.collapse(false);
+    selection.addRange(range);
+    element.focus();
   }
 
   static socketIOPost(posts, setPosts) {
@@ -138,7 +169,7 @@ export class PostUtils {
 
   static updateSinglePost(posts, post, setPosts) {
     posts = cloneDeep(posts);
-    const index = findIndex(posts, ['id', post?._id]);
+    const index = findIndex(posts, ['_id', post?._id]);
     if (index > -1) {
       posts.splice(index, 1, post);
       setPosts(posts);

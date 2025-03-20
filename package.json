@@ -10,6 +10,7 @@
     "date-fns": "^4.1.0",
     "history": "^5.3.0",
     "lodash": "^4.17.21",
+    "millify": "^6.1.0",
     "react": "^19.0.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^19.0.0",

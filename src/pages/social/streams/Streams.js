@@ -13,6 +13,8 @@ import useInfiniteScroll from '@hooks/useInfiniteScroll';
 import { getPosts } from '@redux/api/posts';
 import { followerService } from '@services/api/followers/follower.service';
 import { PostUtils } from '@services/utils/post-utils.service';
+import { addReactions } from '@redux/reducers/post/user-post-reaction.reducer';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 const Streams = () => {
   const allPosts = useSelector((state) => state.allPosts);
@@ -21,6 +23,8 @@ const Streams = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPostsCount, setTotalPostsCount] = useState(0);
+  const storedUsername = useLocalStorage('username', 'get');
+
   const bodyRef = useRef(null);
   const bottomLineRef = useRef();
   let appPosts = useRef([]);
@@ -47,6 +51,15 @@ const Streams = () => {
     }
   };
 
+  const getReactionsByUsername = async () => {
+    try {
+      const response = await postService.getReactionsByUsername(storedUsername);
+      dispatch(addReactions(response.data.reactions));
+    } catch (error) {
+      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+    }
+  };
+
   const getAllPosts = async () => {
     try {
       const response = await postService.getAllPosts(currentPage);
@@ -64,6 +77,7 @@ const Streams = () => {
 
   useEffectOnce(() => {
     getUserFollowing();
+    getReactionsByUsername();
     dispatch(getUserSuggestions());
     dispatch(getPosts());
   });
