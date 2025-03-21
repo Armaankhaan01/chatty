@@ -8,6 +8,7 @@ import { postService } from '@services/api/post/post.service';
 import { reactionsMap } from '@services/utils/static.data';
 import { updatePostItem } from '@redux/reducers/post/post.reducer';
 import { toggleCommentsModal, toggleReactionsModal } from '@redux/reducers/modal/modal.reducer';
+import { Link } from 'react-router-dom';
 
 const ReactionsAndCommentsDisplay = ({ post }) => {
   const { reactionsModalIsOpen, commentsModalIsOpen } = useSelector((state) => state.modal);
@@ -81,7 +82,21 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
                           {postReactions.slice(0, 19).map((postReaction) => (
                             <div key={Utils.generateString(10)}>
                               {postReaction?.type === reaction?.type && (
-                                <span key={postReaction?._id}>{postReaction?.username}</span>
+                                <Link to={`/app/social/profile/${postReaction?.username}`}>
+                                  <div style={{ display: 'flex', marginBottom: '8px', alignItems: 'center' }}>
+                                    <img
+                                      className="title-img"
+                                      src={`${postReaction?.profilePicture}`}
+                                      alt=""
+                                      style={{
+                                        height: '24px',
+                                        width: '24px',
+                                        borderRadius: '50%'
+                                      }}
+                                    />
+                                    <span key={postReaction?._id}>{postReaction?.username}</span>
+                                  </div>
+                                </Link>
                               )}
                             </div>
                           ))}
@@ -105,7 +120,21 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
                 {postReactions.length && (
                   <>
                     {postReactions.slice(0, 19).map((reaction) => (
-                      <span key={Utils.generateString(10)}>{reaction?.username}</span>
+                      <Link to={`/app/social/profile/${reaction?.username}`} key={Utils.generateString(10)}>
+                        <div style={{ display: 'flex', marginBottom: '8px', alignItems: 'center', cursor: 'pointer' }}>
+                          <img
+                            className="title-img"
+                            src={`${reaction?.profilePicture}`}
+                            alt=""
+                            style={{
+                              height: '24px',
+                              width: '24px',
+                              borderRadius: '50%'
+                            }}
+                          />
+                          <span>{reaction?.username}</span>
+                        </div>
+                      </Link>
                     ))}
                     {postReactions.length > 20 && <span>and {postReactions.length - 20} others...</span>}
                   </>

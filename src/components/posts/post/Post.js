@@ -6,8 +6,12 @@ import { timeAgo } from '@services/utils/timeago.utils';
 import { feelingsList, privacyList } from '@services/utils/static.data';
 import { Utils } from '@services/utils/utils.service';
 import PostCommentSection from '../post-comment-section/PostCommentSection';
+import ReactionsModal from '../reactions-modal/ReactionsModal';
+import { useSelector } from 'react-redux';
+import { find } from 'lodash';
 
 const Post = ({ post, showIcons }) => {
+  const { reactionsModalIsOpen } = useSelector((state) => state.modal);
   const getFeeling = (name) => {
     const feeling = find(feelingsList, (data) => data.name === name);
     return feeling?.image;
@@ -20,6 +24,7 @@ const Post = ({ post, showIcons }) => {
 
   return (
     <>
+      {reactionsModalIsOpen && <ReactionsModal />}
       <div className="post-body" data-testid="post">
         <div className="user-post-data">
           <div className="user-post-data-wrap">
