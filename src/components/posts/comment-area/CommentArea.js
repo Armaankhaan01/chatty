@@ -151,11 +151,11 @@ const CommentArea = ({ post }) => {
   }, [selectedUserReaction, reactions]);
 
   return (
-    <div className="comment-area" data-testid="comment-area">
+    <div className="comment-area">
       <div className="like-icon reactions">
         <div className="likes-block" onClick={() => addReactionPost('like')}>
           <div className={`likes-block-icons reaction-icon ${userSelectedReaction.toLowerCase()}`}>
-            <div className={`reaction-display ${userSelectedReaction.toLowerCase()} `} data-testid="selected-reaction">
+            <div className={`reaction-display ${userSelectedReaction.toLowerCase()} `}>
               <img className="reaction-img" src={reactionsMap[userSelectedReaction.toLowerCase()]} alt="" />
               <span>{userSelectedReaction}</span>
             </div>
