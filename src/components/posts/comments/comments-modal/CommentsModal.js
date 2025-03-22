@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 const CommentsModal = () => {
   const post = useSelector((state) => state.post);
   const [postComments, setPostComments] = useState([]);
+  const [expandedComments, setExpandedComments] = useState({});
   const dispatch = useDispatch();
 
   const getPostComments = async () => {
@@ -22,6 +23,13 @@ const CommentsModal = () => {
     } catch (error) {
       Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
     }
+  };
+
+  const toggleExpand = (id) => {
+    setExpandedComments((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   const closeCommentsModal = () => {
@@ -41,13 +49,12 @@ const CommentsModal = () => {
         </div>
         <div className="modal-comments-container">
           <ul className="modal-comments-container-list">
-            {postComments.map((data) => (
-              <li className="modal-comments-container-list-item" key={data?._id}>
-                <Link
-                  to={`/app/social/profile/${data?.username}`}
-                  onClick={closeCommentsModal}
-                  style={{ textDecoration: 'none' }}
-                >
+            {postComments.map((data) => {
+              const isLongComment = data?.comment.length > 200;
+              const showFullComment = expandedComments[data?._id];
+
+              return (
+                <li className="modal-comments-container-list-item" key={data?._id}>
                   <div className="modal-comments-container-list-item-display">
                     <div className="user-img">
                       <Avatar
@@ -60,18 +67,39 @@ const CommentsModal = () => {
                     </div>
                     <div className="modal-comments-container-list-item-display-block">
                       <div className="comment-data">
-                        <h1>{data?.username}</h1>
-                        <p>{data?.comment}</p>
+                        <Link
+                          to={`/app/social/profile/${data?.username}`}
+                          onClick={closeCommentsModal}
+                          style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'inherit' }}
+                        >
+                          <h1>{data?.username}</h1>
+                        </Link>
+                        <p>
+                          {showFullComment
+                            ? data?.comment
+                            : `${data?.comment.slice(0, 200)}${isLongComment ? '...' : ''}`}
+                        </p>
+                        {isLongComment && (
+                          <span
+                            className="read-more-btn"
+                            onClick={(e) => {
+                              toggleExpand(data?._id);
+                            }}
+                          >
+                            {showFullComment ? 'Show less' : 'Read more'}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
-                </Link>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </ReactionWrapper>
     </>
   );
 };
+
 export default CommentsModal;

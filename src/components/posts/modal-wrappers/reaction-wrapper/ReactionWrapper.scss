@@ -22,15 +22,17 @@
     align-self: center;
     justify-self: center;
     position: absolute;
-    width: 500px;
+    width: 100%;
+    max-width: 500px;
     overflow: hidden;
     box-sizing: border-box;
     z-index: 1;
-    min-height: 600px;
+    min-height: 500px;
     border-radius: 8px;
     pointer-events: all;
     background-color: var(--white-1);
     flex-direction: column;
+    padding: 1rem;
 
     &-body {
       height: 600px;
@@ -55,10 +57,26 @@
       margin-top: -5px;
       outline: none;
       cursor: pointer;
-      background: 0 0;
+      background: transparent;
       border: 0;
       text-align: right;
       font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &-container {
+      width: 95%;
+      min-height: 500px;
+      margin: 100px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &-container {
+      width: 90%;
+      min-height: 450px;
+      margin: 100px;
     }
   }
 }
