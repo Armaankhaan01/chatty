@@ -24,6 +24,7 @@ const Streams = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPostsCount, setTotalPostsCount] = useState(0);
   const storedUsername = useLocalStorage('username', 'get');
+  const [deleteSelectedPostId] = useLocalStorage('selectedPostId', 'delete');
 
   const bodyRef = useRef(null);
   const bottomLineRef = useRef();
@@ -79,6 +80,7 @@ const Streams = () => {
     getUserFollowing();
     getReactionsByUsername();
     dispatch(getUserSuggestions());
+    deleteSelectedPostId();
     dispatch(getPosts());
   });
 

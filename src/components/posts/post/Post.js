@@ -11,9 +11,10 @@ import { useSelector } from 'react-redux';
 import { find } from 'lodash';
 import CommentInputBox from '../comments/comment-input/CommentInputBox';
 import useLocalStorage from '@hooks/useLocalStorage';
+import CommentsModal from '../comments/comments-modal/CommentsModal';
 
 const Post = ({ post, showIcons }) => {
-  const { reactionsModalIsOpen } = useSelector((state) => state.modal);
+  const { reactionsModalIsOpen, commentsModalIsOpen } = useSelector((state) => state.modal);
   const selectedPost = useSelector((state) => state.post);
   const selectedPostId = useLocalStorage('selectedPostId', 'get');
 
@@ -30,6 +31,7 @@ const Post = ({ post, showIcons }) => {
   return (
     <>
       {reactionsModalIsOpen && <ReactionsModal />}
+      {commentsModalIsOpen && <CommentsModal />}
       <div className="post-body" data-testid="post">
         <div className="user-post-data">
           <div className="user-post-data-wrap">

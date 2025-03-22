@@ -10,7 +10,11 @@ const ReactionList = ({ postReactions }) => {
   return (
     <div className="modal-reactions-container">
       {postReactions.map((reaction) => (
-        <Link to={`/app/social/profile/${reaction?.username}`} key={Utils.generateString(10)}>
+        <Link
+          to={`/app/social/profile/${reaction?.username}`}
+          key={Utils.generateString(10)}
+          style={{ textDecoration: 'none' }}
+        >
           <div className="modal-reactions-container-list">
             <div className="img">
               <Avatar

@@ -18,12 +18,12 @@ const CommentInputBox = ({ post }) => {
     event.preventDefault();
     try {
       post = cloneDeep(post);
-      post.commentCount += 1;
+      post.commentsCount += 1;
       const commentBody = {
         userTo: post?.userId,
         postId: post?._id,
         comment: comment.trim(),
-        commentsCount: post.commentCount,
+        commentsCount: post.commentsCount,
         profilePicture: profile?.profilePicture
       };
       socketService?.socket?.emit('comment', commentBody);
