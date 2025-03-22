@@ -1,0 +1,105 @@
+.modal-comments {
+  align-self: center;
+  justify-self: center;
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  overflow: hidden;
+  z-index: 1;
+  min-height: 400px;
+  border-radius: 8px;
+  background-color: var(--gray-16);
+  display: grid;
+  flex-direction: column;
+  padding: 1rem;
+
+  &-section {
+    display: flex;
+  }
+  &-header {
+    h2 {
+      text-align: center;
+      color: var(--black-5);
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      height: 100px;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &-container {
+    margin: 0 5px;
+    max-height: 100%;
+    min-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+
+    &-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      &-item {
+        margin-bottom: 1rem;
+        padding: 5px 10px;
+
+        &-display {
+          display: grid;
+          grid-template-columns: 50px 1fr;
+          grid-gap: 10px;
+
+          &-block {
+            .comment-data {
+              background: var(--white-10);
+              padding: 10px 15px;
+              border-radius: 20px;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+
+              .read-more-btn {
+                color: var(--black-5);
+                font-weight: 700;
+                cursor: pointer;
+                margin-top: 5px;
+                font-size: 14px;
+                padding: 0;
+                display: inline-block;
+
+                &:hover {
+                  color: var(--black-1);
+                }
+              }
+
+              h1 {
+                font-size: 16px;
+                color: var(--black-5);
+                font-weight: bold;
+                margin-bottom: 5px;
+                word-break: break-word;
+              }
+
+              p {
+                font-size: 15px;
+                white-space: pre-wrap; /* ensures long text wraps nicely */
+                word-break: break-word;
+                line-height: 1.4;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 90%;
+    padding: 0.75rem;
+
+    &-container {
+      max-height: 350px;
+    }
+  }
+}

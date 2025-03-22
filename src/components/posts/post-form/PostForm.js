@@ -16,6 +16,7 @@ import {
 import AddPost from '../post-modal/post-add/AddPost';
 import { useRef, useState } from 'react';
 import { ImageUtils } from '@services/utils/image-utils.service';
+import EditPost from '../post-modal/post-edit/EditPost';
 
 function PostForm(props) {
   const { profile } = useSelector((state) => state.user);
@@ -65,6 +66,9 @@ function PostForm(props) {
   return (
     <>
       {isOpen && type === 'add' && <AddPost selectedImage={selectedPostImage} selectedPostVideo={selectedPostVideo} />}
+      {isOpen && type === 'edit' && (
+        <EditPost selectedImage={selectedPostImage} selectedPostVideo={selectedPostVideo} />
+      )}
       <div className="post-form" data-testid="post-form">
         <div className="post-form-row">
           <div className="post-form-header">
