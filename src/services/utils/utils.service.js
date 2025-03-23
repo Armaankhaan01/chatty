@@ -2,7 +2,7 @@ import { addNotification, clearNotification } from '@redux/reducers/notification
 import { addUser, clearUser } from '@redux/reducers/user/user.reducer';
 import { APP_ENVIRONMENT } from '@services/axios';
 import { avatarColors } from '@services/utils/static.data';
-import { floor, random, some } from 'lodash';
+import { findIndex, floor, random, some } from 'lodash';
 import millify from 'millify';
 
 export class Utils {
@@ -132,5 +132,11 @@ export class Utils {
     } else {
       return millify(data);
     }
+  }
+
+  static removeUserFromList(list, userId) {
+    const index = findIndex(list, (id) => id === userId);
+    list.splice(index, 1);
+    return list;
   }
 }

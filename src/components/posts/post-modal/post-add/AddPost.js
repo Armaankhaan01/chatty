@@ -267,7 +267,6 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
             <ul>
               {bgColors.map((color, index) => (
                 <li
-                  data-testid="bg-colors"
                   key={index}
                   className={`${color === '#ffffff' ? 'whiteColorBorder' : ''}`}
                   style={{ backgroundColor: `${color}` }}

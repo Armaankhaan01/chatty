@@ -12,7 +12,7 @@ import CardElementStats from '@components/card-element/CardElementStats';
 import CardElementButtons from '@components/card-element/CardElementButtons';
 import { ProfileUtils } from '@services/utils/profile-utils.service';
 import { useNavigate } from 'react-router-dom';
-import { FollowersUtils } from '@services/utils/followers-util.service';
+import { FollowersUtils } from '@services/utils/followers-utils.service';
 import { socketService } from '@services/socket/socket.service';
 import { followerService } from '@services/api/followers/follower.service';
 
