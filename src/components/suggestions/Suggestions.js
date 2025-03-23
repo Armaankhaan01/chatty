@@ -2,7 +2,7 @@ import Avatar from '@components/avatar/Avatar';
 import Button from '@components/button/Button';
 import '@components/suggestions/Suggestions.scss';
 import { addToSuggestions } from '@redux/reducers/suggestions/suggestions.reducer';
-import { FollowersUtils } from '@services/utils/followers-util.service';
+import { FollowersUtils } from '@services/utils/followers-utils.service';
 import { Utils } from '@services/utils/utils.service';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
@@ -38,8 +38,8 @@ const Suggestions = () => {
       <hr />
       <div className="suggestions-container">
         <div className="suggestions">
-          {users?.map((user, index) => (
-            <div data-testid="suggestions-item" className="suggestions-item" key={index}>
+          {users?.map((user) => (
+            <div className="suggestions-item" key={user?._id}>
               <Avatar
                 name={user?.username}
                 bgColor={user?.avatarColor}

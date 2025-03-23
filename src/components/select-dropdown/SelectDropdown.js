@@ -18,7 +18,7 @@ const SelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
       <nav ref={dropdownRef} className={`menu ${isActive ? 'active' : 'inactive'}`}>
         <ul>
           {items.map((item, index) => (
-            <li data-testid="select-dropdown" key={index} onClick={() => selectItem(item)}>
+            <li key={index} onClick={() => selectItem(item)}>
               <div className="menu-icon">{item.icon}</div>
               <div className="menu-text">
                 <div className="menu-text-header">{item.topText}</div>

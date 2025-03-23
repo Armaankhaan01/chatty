@@ -44,10 +44,10 @@ const Toast = (props) => {
 
   return (
     <div className={`toast-notification-container ${position}`}>
-      {list.map((toast, index) => (
+      {list.map((toast) => (
         <div
           className={`toast-notification toast ${position}`}
-          key={index}
+          key={Utils.generateString(10)}
           style={{ backgroundColor: toast.backgroundColor }}
         >
           <button className="cancel-button" onClick={() => deleteToast(toast.id)}>
