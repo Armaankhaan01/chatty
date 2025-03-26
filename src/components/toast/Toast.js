@@ -36,7 +36,7 @@ const Toast = (props) => {
       deleteToast();
     };
 
-    if (autoDelete && toastList.length && list.length) {
+    if (autoDelete && toastList?.length && list?.length) {
       const interval = setInterval(tick, autoDeleteTime);
       return () => clearInterval(interval);
     }
@@ -53,10 +53,10 @@ const Toast = (props) => {
           <button className="cancel-button" onClick={() => deleteToast(toast.id)}>
             X
           </button>
-          <div className={`toast-notification-image ${toast.description.length <= 73 ? 'toast-icon' : ''}`}>
+          <div className={`toast-notification-image ${toast?.description?.length <= 73 ? 'toast-icon' : ''}`}>
             <img src={toast.icon} alt="toast icon" />
           </div>
-          <div className={`toast-notification-message ${toast.description.length <= 73 ? 'toast-message' : ''}`}>
+          <div className={`toast-notification-message ${toast?.description?.length <= 73 ? 'toast-message' : ''}`}>
             {toast.description}
           </div>
         </div>
