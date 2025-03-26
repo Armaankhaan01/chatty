@@ -1,9 +1,9 @@
 .conversation-container {
   display: grid;
   grid:
-    "conversation-header"
-    "search-container"
-    "conversation-list";
+    'conversation-header'
+    'search-container'
+    'conversation-list';
 
   &-header {
     grid-area: conversation-header;
@@ -82,15 +82,13 @@
 
   &-body {
     overflow-y: scroll;
-    height: 780px;
-
+    height: calc(100vh - 290px);
     .conversation {
       grid-area: conversation-list;
       display: grid;
       color: var(--white-1);
       padding: 0;
       margin-bottom: 10px;
-      padding-top: 10px;
 
       &.active {
         background: var(--white-4);
@@ -107,7 +105,7 @@
       .conversation-item {
         display: grid;
         grid-template-columns: 40px 1fr max-content;
-        margin-bottom: 20px;
+        margin-bottom: 8px;
         width: 100%;
         padding: 10px;
 

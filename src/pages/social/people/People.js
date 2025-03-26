@@ -15,11 +15,13 @@ import { useNavigate } from 'react-router-dom';
 import { FollowersUtils } from '@services/utils/followers-utils.service';
 import { socketService } from '@services/socket/socket.service';
 import { followerService } from '@services/api/followers/follower.service';
+import { ChatUtils } from '@services/utils/chat-utils.service';
 
 const People = () => {
   const { profile } = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
-  const [onlineUsers] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -97,7 +99,7 @@ const People = () => {
 
   useEffect(() => {
     FollowersUtils.socketIOFollowAndUnfollow(users, following, setFollowing, setUsers);
-    // Todo add setOnline user here
+    ChatUtils.usersOnline(setOnlineUsers);
   }, [following, users]);
 
   return (
