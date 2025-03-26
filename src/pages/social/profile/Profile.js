@@ -4,12 +4,22 @@ import BackgroundHeader from '@components/background-header/BackgroundHeader';
 import { Utils } from '@services/utils/utils.service';
 import { imageService } from '@services/image/image.service';
 import { userService } from '@services/api/user/user.service';
+import { toggleDeleteDialog } from '@redux/reducers/modal/modal.reducer';
+import { filter } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { tabItems } from '@services/utils/static.data';
+import Dialog from '@components/dialog/Dialog';
+import Timeline from '@components/timeline/Timeline';
+import FollowerCard from '../followers/FollowerCard';
+import NotificationSettings from '@components/notification-settings/NotificationSettings';
+import ChangePassword from '@components/change-password/ChangePassword';
+import GalleryImage from '@components/gallery-image/GalleryImage';
+import ImageModal from '@components/image-modal/ImageModal';
 
 const Profile = () => {
   const { profile } = useSelector((state) => state.user);
+  const { deleteDialogIsOpen, data } = useSelector((state) => state.modal);
   const [user, setUser] = useState();
   const [rendered, setRendered] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -18,8 +28,10 @@ const Profile = () => {
   const [selectedProfileImage, setSelectedProfileImage] = useState('');
   const [bgUrl, setBgUrl] = useState('');
   const [galleryImages, setGalleryImages] = useState([]);
+  const [imageUrl, setImageUrl] = useState('');
   const [displayContent, setDisplayContent] = useState('timeline');
   const [loading, setLoading] = useState(true);
+  const [showImageModal, setShowImageModal] = useState(false);
   const [userProfileData, setUserProfileData] = useState(null);
   const dispatch = useDispatch();
   const { username } = useParams();
@@ -108,6 +120,18 @@ const Profile = () => {
     }
   };
 
+  const removeImageFromGallery = async (imageId) => {
+    try {
+      dispatch(toggleDeleteDialog({ toggle: false, data: null }));
+      const images = filter(galleryImages, (image) => image._id !== imageId);
+      setGalleryImages(images);
+      await removeImage(`/images/${imageId}`);
+    } catch (error) {
+      setHasError(true);
+      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+    }
+  };
+
   const removeImage = async (url) => {
     const response = await imageService.removeImage(url);
     Utils.dispatchNotification(response.data.message, 'success', dispatch);
@@ -123,6 +147,19 @@ const Profile = () => {
 
   return (
     <>
+      {showImageModal && (
+        <ImageModal image={`${imageUrl}`} onCancel={() => setShowImageModal(!showImageModal)} showArrow={false} />
+      )}
+      {deleteDialogIsOpen && (
+        <Dialog
+          title="Are you sure you want to delete this image?"
+          showButtons={true}
+          firstButtonText="Delete"
+          secondButtonText="Cancel"
+          firstBtnHandler={() => removeImageFromGallery(data)}
+          secondBtnHandler={() => dispatch(toggleDeleteDialog({ toggle: false, data: null }))}
+        />
+      )}
       <div className="profile-wrapper">
         <div className="profile-wrapper-container">
           <div className="profile-header">
@@ -142,6 +179,39 @@ const Profile = () => {
               hideSettings={username === profile?.username}
               galleryImages={galleryImages}
             />
+          </div>
+          <div className="profile-content">
+            {displayContent === 'timeline' && <Timeline userProfileData={userProfileData} loading={loading} />}
+            {displayContent === 'followers' && <FollowerCard userData={user} />}
+            {displayContent === 'gallery' && (
+              <>
+                {galleryImages.length > 0 && (
+                  <>
+                    <div className="imageGrid-container">
+                      {galleryImages.map((image) => (
+                        <div key={image._id}>
+                          <GalleryImage
+                            showCaption={false}
+                            showDelete={true}
+                            imgSrc={Utils.getImage(image?.imgId, image.imgVersion)}
+                            onClick={() => {
+                              setImageUrl(Utils.getImage(image?.imgId, image.imgVersion));
+                              setShowImageModal(!showImageModal);
+                            }}
+                            onRemoveImage={(event) => {
+                              event.stopPropagation();
+                              dispatch(toggleDeleteDialog({ toggle: !deleteDialogIsOpen, data: image?._id }));
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+            {displayContent === 'change password' && <ChangePassword />}
+            {displayContent === 'notifications' && <NotificationSettings />}
           </div>
         </div>
       </div>
