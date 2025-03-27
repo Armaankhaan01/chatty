@@ -18,7 +18,7 @@ import { useRef, useState } from 'react';
 import { ImageUtils } from '@services/utils/image-utils.service';
 import EditPost from '../post-modal/post-edit/EditPost';
 
-function PostForm(props) {
+function PostForm() {
   const { profile } = useSelector((state) => state.user);
   const { type, isOpen, openFileDialog, gifModalIsOpen, feelingsIsOpen, openVideoDialog } = useSelector(
     (state) => state.modal
@@ -100,13 +100,13 @@ function PostForm(props) {
                   }}
                   handleChange={handleFileChange}
                 />
-                <img src={photo} alt="" /> Photo
+                <img src={photo} alt="Photo" /> Photo
               </li>
               <li className="post-form-list-item" onClick={() => openGifModal()}>
-                <img src={gif} alt="" /> Gif
+                <img src={gif} alt="gif" /> Gif
               </li>
               <li className="post-form-list-item" onClick={() => openFeelingsComponent()}>
-                <img src={feeling} alt="" /> Feeling
+                <img src={feeling} alt="feeling" /> Feeling
               </li>
               <li className="post-form-list-item image-select" onClick={() => openVideoModal()}>
                 <Input
@@ -121,7 +121,7 @@ function PostForm(props) {
                   }}
                   handleChange={handleVideoFileChange}
                 />
-                <img src={video} alt="" /> Video
+                <img src={video} alt="video" /> Video
               </li>
             </ul>
           </div>

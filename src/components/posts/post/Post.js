@@ -180,6 +180,21 @@ const Post = ({ post, showIcons }) => {
                   <img className="post-image" style={{ objectFit: 'contain' }} src={`${post?.gifUrl}`} alt="" />
                 </div>
               )}
+              {post?.videoId && post.bgColor === '#ffffff' && (
+                <div
+                  data-testid="post-image"
+                  className="image-display-flex"
+                  style={{ height: '600px', backgroundColor: '#000000' }}
+                >
+                  <video
+                    width="100%"
+                    height="600px"
+                    autoPlay={true}
+                    controls
+                    src={`${Utils.getVideo(post.videoId, post.videoVersion)}`}
+                  />
+                </div>
+              )}
               {(post?.reactions.length > 0 || post?.commentsCount > 0) && <hr />}
               <PostCommentSection post={post} />
             </div>
