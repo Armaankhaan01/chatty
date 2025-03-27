@@ -108,8 +108,10 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
         if (type === 'image') {
           postData.image = result;
           postData.video = '';
+          postData.bgColor = '#ffffff';
         } else {
           postData.video = result;
+          postData.bgColor = '#ffffff';
           postData.image = '';
         }
         const response = await PostUtils.sendPostWithFileRequest(

@@ -9,13 +9,12 @@ import { PostUtils } from '@services/utils/post-utils.service';
 import ModalBoxSelection from '../modal-box-content/ModalBoxSelection';
 import Button from '@components/button/Button';
 import { addPostFeeling, closeModal, toggleGifModal } from '@redux/reducers/modal/modal.reducer';
-import PropTypes from 'prop-types';
 import { ImageUtils } from '@services/utils/image-utils.service';
 import Giphy from '@components/giphy/Giphy';
 import Spinner from '@components/spinner/Spinner';
 import { Utils } from '@services/utils/utils.service';
 
-const EditPost = ({ selectedImage, selectedPostVideo }) => {
+const EditPost = () => {
   const { gifModalIsOpen, feeling } = useSelector((state) => state.modal);
   const post = useSelector((state) => state.post);
   const { profile } = useSelector((state) => state.user);
@@ -116,7 +115,7 @@ const EditPost = ({ selectedImage, selectedPostVideo }) => {
       });
     }
 
-    if (post?.gifUrl && !post?.imgId && post.videoId) {
+    if (post?.gifUrl && !post?.imgId && !post.videoId) {
       postData.gifUrl = post?.gifUrl;
       postData.videoId = '';
       postData.videoVersion = '';
@@ -166,6 +165,7 @@ const EditPost = ({ selectedImage, selectedPostVideo }) => {
       }
       postData.privacy = post?.privacy || 'Public';
       postData.profilePicture = profile?.profilePicture;
+
       if (selectedPostImage || selectedVideo) {
         let result = '';
         if (selectedPostImage) {
@@ -175,18 +175,29 @@ const EditPost = ({ selectedImage, selectedPostVideo }) => {
           result = await ImageUtils.readAsBase64(selectedVideo);
         }
         const type = selectedPostImage ? 'image' : 'video';
+
+        // Reset video and image IDs/versions based on the current post state
+        postData.videoId = post?.videoId || '';
+        postData.videoVersion = post?.videoVersion || '';
+        postData.imgId = post?.imgId || '';
+        postData.imgVersion = post?.imgVersion || '';
+
         if (type === 'image') {
           postData.image = result;
           postData.video = '';
+          // If switching from video to image, clear video IDs
+          postData.videoId = '';
+          postData.videoVersion = '';
         } else {
           postData.image = '';
           postData.video = result;
+          // If switching from image to video, clear image IDs
+          postData.imgId = '';
+          postData.imgVersion = '';
         }
+
         postData.gifUrl = '';
-        postData.imgId = '';
-        postData.imgVersion = '';
-        postData.videoId = '';
-        postData.videoVersion = '';
+
         await PostUtils.sendUpdatePostWithFileRequest(type, post?._id, postData, setApiResponse, setLoading, dispatch);
       } else {
         setHasVideo(false);
@@ -329,7 +340,7 @@ const EditPost = ({ selectedImage, selectedPostVideo }) => {
                   {!hasVideo && <img data-testid="post-image" className="post-image" src={`${postImage}`} alt="" />}
                   {hasVideo && (
                     <div style={{ marginTop: '-40px' }}>
-                      <video width="100%" controls src={`${post?.video}`} />
+                      <video width="100%" controls src={Utils.getVideo(post?.videoId, post?.videoVersion)} />
                     </div>
                   )}
                 </div>
@@ -381,11 +392,6 @@ const EditPost = ({ selectedImage, selectedPostVideo }) => {
       <div></div>
     </PostWrapper>
   );
-};
-
-EditPost.propTypes = {
-  selectedImage: PropTypes.any,
-  selectedPostVideo: PropTypes.any
 };
 
 export default EditPost;

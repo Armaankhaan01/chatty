@@ -2,7 +2,7 @@ import { addNotification, clearNotification } from '@redux/reducers/notification
 import { addUser, clearUser } from '@redux/reducers/user/user.reducer';
 import { APP_ENVIRONMENT } from '@services/axios';
 import { avatarColors } from '@services/utils/static.data';
-import { findIndex, floor, random, some } from 'lodash';
+import { floor, random, some, findIndex } from 'lodash';
 import millify from 'millify';
 
 export class Utils {
@@ -54,7 +54,7 @@ export class Utils {
 
   static appEnvironment() {
     if (APP_ENVIRONMENT === 'local') {
-      return 'DEV';
+      return 'LOCAL';
     } else if (APP_ENVIRONMENT === 'development') {
       return 'DEV';
     } else if (APP_ENVIRONMENT === 'staging') {
@@ -132,6 +132,12 @@ export class Utils {
     } else {
       return millify(data);
     }
+  }
+
+  static getVideo(videoId, videoVersion) {
+    return videoId && videoVersion
+      ? `https://res.cloudinary.com/dpey3zzge/video/upload/v${videoVersion}/${videoId}`
+      : '';
   }
 
   static removeUserFromList(list, userId) {
