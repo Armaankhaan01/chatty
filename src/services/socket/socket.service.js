@@ -7,25 +7,34 @@ class SocketService {
   setupSocketConnection() {
     this.socket = io(BASE_ENDPOINT, {
       transports: ['websocket'],
-      secure: true
+      secure: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000
     });
+
     this.socketConnectionEvents();
   }
 
   socketConnectionEvents() {
     this.socket.on('connect', () => {
-      console.log('connected');
+      console.log('Connected to socket server');
     });
 
     this.socket.on('disconnect', (reason) => {
-      console.log(`Reason: ${reason}`);
-      this.socket.connect();
+      console.warn(`Socket disconnected: ${reason}`);
     });
 
     this.socket.on('connect_error', (error) => {
-      console.log(`Error: ${error}`);
-      this.socket.connect();
+      console.error(`Socket connection error: ${error.message}`);
     });
+  }
+
+  disconnectSocket() {
+    if (this.socket) {
+      this.socket.disconnect();
+      console.log('Socket disconnected manually');
+    }
   }
 }
 
