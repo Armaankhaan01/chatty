@@ -143,7 +143,7 @@ const Profile = () => {
       getUserImages();
     }
     if (!rendered) setRendered(true);
-  }, [rendered, getUserProfileByUsername, getUserImages]);
+  }, [rendered, getUserProfileByUsername, getUserImages, username]);
 
   return (
     <>

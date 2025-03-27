@@ -176,7 +176,12 @@
         padding-left: 15px;
 
         .name {
+          cursor:pointer;
           font-weight: 600;
+        }
+
+        .name:hover {
+          color: var(--primary-1);
         }
 
         .count {

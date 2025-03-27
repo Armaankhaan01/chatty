@@ -3,15 +3,15 @@ import Button from '@components/button/Button';
 import '@pages/social/followers/Followers.scss';
 import { FaUserPlus } from 'react-icons/fa';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { followerService } from '@services/api/followers/follower.service';
 import { Utils } from '@services/utils/utils.service';
 import { userService } from '@services/api/user/user.service';
 import { FollowersUtils } from '@services/utils/followers-utils.service';
 import { socketService } from '@services/socket/socket.service';
-import useEffectOnce from '@hooks/useEffectOnce';
+import { ProfileUtils } from '@services/utils/profile-utils.service';
 
 const FollowerCard = ({ userData }) => {
   const { profile } = useSelector((state) => state.user);
@@ -19,10 +19,11 @@ const FollowerCard = ({ userData }) => {
   const [user, setUser] = useState(userData);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { username } = useParams();
 
-  const getUserFollowers = async () => {
+  const getUserFollowers = useCallback(async () => {
     try {
       const response = await followerService.getUserFollowers(searchParams.get('id'));
       setFollowers(response.data.followers);
@@ -30,9 +31,9 @@ const FollowerCard = ({ userData }) => {
     } catch (error) {
       Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
     }
-  };
+  }, [dispatch, searchParams]);
 
-  const getUserProfileByUsername = async () => {
+  const getUserProfileByUsername = useCallback(async () => {
     try {
       const response = await userService.getUserProfileByUsername(
         username,
@@ -43,7 +44,7 @@ const FollowerCard = ({ userData }) => {
     } catch (error) {
       Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
     }
-  };
+  }, [dispatch, searchParams, username]);
 
   const blockUser = (userInfo) => {
     try {
@@ -63,10 +64,10 @@ const FollowerCard = ({ userData }) => {
     }
   };
 
-  useEffectOnce(() => {
+  useEffect(() => {
     getUserProfileByUsername();
     getUserFollowers();
-  });
+  }, [getUserProfileByUsername, getUserFollowers, username]);
 
   useEffect(() => {
     FollowersUtils.socketIOBlockAndUnblockCard(user, setUser);
@@ -89,7 +90,9 @@ const FollowerCard = ({ userData }) => {
                   />
                 </div>
                 <div className="card-user">
-                  <span className="name">{data?.username}</span>
+                  <span className="name" onClick={() => ProfileUtils.navigateToProfile(data, navigate)}>
+                    {data?.username}
+                  </span>
                   <p className="count">
                     <FaUserPlus className="heart" /> <span>{Utils.shortenLargeNumbers(data?.followingCount)}</span>
                   </p>
