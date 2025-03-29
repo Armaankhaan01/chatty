@@ -10,9 +10,9 @@ if (APP_ENVIRONMENT === 'local') {
 } else if (APP_ENVIRONMENT === 'development') {
   BASE_ENDPOINT = 'http://localhost:5000';
 } else if (APP_ENVIRONMENT === 'staging') {
-  BASE_ENDPOINT = process.env.REACT_APP_BASE_ENDPOINT;
+  BASE_ENDPOINT = 'https://chatty-backend1.arkarman.xyz';
 } else if (APP_ENVIRONMENT === 'production') {
-  BASE_ENDPOINT = process.env.REACT_APP_BASE_ENDPOINT;
+  BASE_ENDPOINT = 'https://chatty-backend1.arkarman.xyz';
 }
 
 const BASE_URL = `${BASE_ENDPOINT}/api/v1`;
