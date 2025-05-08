@@ -1,5 +1,6 @@
 import { addNotification, clearNotification } from '@redux/reducers/notifications/notifications.reducer';
 import { addUser, clearUser } from '@redux/reducers/user/user.reducer';
+import { authService } from '@services/api/auth/auth.service';
 import { APP_ENVIRONMENT } from '@services/axios';
 import { avatarColors } from '@services/utils/static.data';
 import { floor, random, some, findIndex } from 'lodash';
@@ -33,6 +34,9 @@ export class Utils {
   static dispatchUser(result, pageReload, dispatch, setUser) {
     pageReload(true);
     dispatch(addUser({ token: result.data.token, profile: result.data.user }));
+    if (result.data.token) {
+      authService.storeToken(result.data.token);
+    }
     setUser(result.data.user);
   }
 
@@ -40,6 +44,7 @@ export class Utils {
     dispatch(clearUser());
     dispatch(clearNotification());
     deleteStorageUsername();
+    authService.clearToken();
     deleteSessionPageReload();
     setLoggedIn(false);
   }
