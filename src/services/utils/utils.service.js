@@ -33,16 +33,12 @@ export class Utils {
 
   static dispatchUser(result, pageReload, dispatch, setUser) {
     pageReload(true);
-<<<<<<< HEAD
     dispatch(addUser({ token: result.token, profile: result.user }));
     setUser(result.user);
-=======
-    dispatch(addUser({ token: result.data.token, profile: result.data.user }));
-    if (result.data.token) {
-      authService.storeToken(result.data.token);
+    if (result.token) {
+      authService.storeToken(result.token);
     }
-    setUser(result.data.user);
->>>>>>> 1932a7a76a472729b8133b7ef44b8396e7b3725e
+    setUser(result.user);
   }
 
   static clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedIn }) {

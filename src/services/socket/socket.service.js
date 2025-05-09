@@ -6,23 +6,10 @@ class SocketService {
   reconnectTimer = null;
   reconnectAttempts = 0;
   maxReconnectAttempts = 5;
-  reconnectInterval = 5000; // 5 seconds
+  reconnectInterval = 5000;
 
-  // Get backend URL - centralize this configuration
   getBackendUrl() {
-    // Priority: environment variable > hardcoded value
-    // In a real app, you might want to use process.env.REACT_APP_SOCKET_URL or similar
-    return 'https://chatty-backend.arkarman.xyz'; // Updated to match the working URL from logs
-  }
-
-  // Get auth token for socket connection
-  getAuthToken() {
-    try {
-      return localStorage.getItem('token') || '';
-    } catch (e) {
-      console.warn('Unable to access localStorage for token');
-      return '';
-    }
+    return process.env.REACT_APP_BASE_ENDPOINT;
   }
 
   setupSocketConnection() {
@@ -39,7 +26,6 @@ class SocketService {
     }
 
     const backendUrl = this.getBackendUrl();
-    const token = this.getAuthToken();
 
     console.log(`Setting up socket connection to: ${backendUrl}`);
 
@@ -47,10 +33,7 @@ class SocketService {
       transports: ['websocket'],
       upgrade: false,
       secure: true,
-      reconnection: false, // We'll handle reconnection ourselves
-      auth: {
-        token
-      },
+      reconnection: false,
       extraHeaders: {
         Host: new URL(backendUrl).hostname
       }
@@ -74,30 +57,23 @@ class SocketService {
 
     this.socket.on('connect', () => {
       console.log(`✅ Socket connected successfully! ID: ${this.socket.id}`);
-      // Reset reconnection attempts on successful connection
       this.reconnectAttempts = 0;
     });
 
     this.socket.on('disconnect', (reason) => {
       console.warn(`Socket disconnected. Reason: ${reason}`);
 
-      // Handle reconnection based on disconnect reason
       if (reason === 'io server disconnect') {
-        // The server has forcefully disconnected the socket
         this.scheduleReconnect();
       } else if (reason === 'transport close') {
-        // The connection was closed
         this.scheduleReconnect();
       }
-      // Other reasons like 'client namespace disconnect' or 'ping timeout'
-      // might also warrant reconnection attempts
     });
 
     this.socket.on('connect_error', (error) => {
       console.error(`❌ Socket connection error: ${error.message}`, error);
       console.log(`Connection URL: ${this.socket.io.uri}`);
 
-      // Log transport info if available
       if (this.socket.io.engine && this.socket.io.engine.transport) {
         console.log(`Transport: ${this.socket.io.engine.transport.name}`);
       }
@@ -108,13 +84,9 @@ class SocketService {
     this.socket.on('error', (error) => {
       console.error('❌ Socket general error:', error);
     });
-
-    // Add any custom event listeners here
-    // this.socket.on('custom_event', (data) => { ... });
   }
 
   scheduleReconnect() {
-    // Prevent multiple reconnection timers
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -136,7 +108,6 @@ class SocketService {
     }, delay);
   }
 
-  // Method to emit events with authentication
   emit(eventName, data) {
     if (this.socket && this.socket.connected) {
       console.log(`Emitting event: ${eventName}`, data);
