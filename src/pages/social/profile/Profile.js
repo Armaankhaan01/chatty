@@ -83,15 +83,22 @@ const Profile = () => {
   }, [dispatch, searchParams]);
 
   const saveImage = (type) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', async () => addImage(reader.result, type), false);
+    const file = type === 'background' ? selectedBackgroundImage : selectedProfileImage;
 
-    if (selectedBackgroundImage && typeof selectedBackgroundImage !== 'string') {
-      reader.readAsDataURL(Utils.renameFile(selectedBackgroundImage));
-    } else if (selectedProfileImage && typeof selectedProfileImage !== 'string') {
-      reader.readAsDataURL(Utils.renameFile(selectedProfileImage));
-    } else {
-      addImage(selectedBackgroundImage, type);
+    if (file && typeof file !== 'string') {
+      const renamedFile = Utils.renameFile(file); // Make sure this keeps the original MIME type
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        const sanitizedResult = result.replace(/^data:\/image/, 'data:image'); // Fix malformed MIME
+        addImage(sanitizedResult, type);
+      };
+      reader.readAsDataURL(renamedFile);
+    } else if (file && typeof file === 'string') {
+      // Already a data URL or URL string — sanitize just in case
+      const sanitized = file.replace(/^data:\/image/, 'data:image');
+      addImage(sanitized, type);
     }
   };
 
@@ -106,7 +113,7 @@ const Profile = () => {
       }
     } catch (error) {
       setHasError(true);
-      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+      Utils.dispatchNotification(error?.response?.data?.message || 'Image upload failed', 'error', dispatch);
     }
   };
 

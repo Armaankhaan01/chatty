@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fontAwesomeIcons, sideBarItems } from '@services/utils/static.data';
+import PropTypes from 'prop-types';
 
 import './Sidebar.scss';
 import { getPosts } from '@redux/api/posts';
@@ -10,10 +11,10 @@ import { ChatUtils } from '@services/utils/chat-utils.service';
 import { chatService } from '@services/api/chat/chat.service';
 import { Utils } from '@services/utils/utils.service';
 
-const Sidebar = () => {
+const Sidebar = ({ onNavigate }) => {
   const { profile } = useSelector((state) => state.user);
   const { chatList } = useSelector((state) => state.chat);
-  const [Sidebar, setSidebar] = useState([]);
+  const [sidebar, setSidebar] = useState([]);
   const [chatPageName, setChatPageName] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
@@ -39,7 +40,11 @@ const Sidebar = () => {
     }
     socketService?.socket.off('message received');
     navigate(url);
-    navigate(url);
+
+    // Close sidebar on mobile after navigation if onNavigate is provided
+    if (onNavigate) {
+      onNavigate();
+    }
   };
 
   const createChatUrlParams = useCallback(
@@ -56,12 +61,12 @@ const Sidebar = () => {
     [chatList, profile]
   );
 
-  const markMessagesAsRad = useCallback(
+  const markMessagesAsRead = useCallback(
     async (user) => {
       try {
         const receiverId = user?.receiverUsername !== profile?.username ? user?.receiverId : user?.senderId;
         if (user?.receiverUsername === profile?.username && !user.isRead) {
-          await chatService.markMessagesAsRad(profile?._id, receiverId);
+          await chatService.markMessagesAsRead(profile?._id, receiverId);
         }
         const userTwoName =
           user?.receiverUsername !== profile?.username ? user?.receiverUsername : user?.senderUsername;
@@ -75,11 +80,13 @@ const Sidebar = () => {
 
   const leaveChatPage = async () => {
     try {
-      const chatUser = chatList[0];
-      const userTwoName =
-        chatUser?.receiverUsername !== profile?.username ? chatUser?.receiverUsername : chatUser?.senderUsername;
-      ChatUtils.privateChatMessages = [];
-      await chatService.removeChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+      if (chatList.length > 0) {
+        const chatUser = chatList[0];
+        const userTwoName =
+          chatUser?.receiverUsername !== profile?.username ? chatUser?.receiverUsername : chatUser?.senderUsername;
+        ChatUtils.privateChatMessages = [];
+        await chatService.removeChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+      }
     } catch (error) {
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
@@ -94,16 +101,16 @@ const Sidebar = () => {
       const url = createChatUrlParams('/app/social/chat/messages');
       navigate(url);
       if (chatList.length && !chatList[0].isRead) {
-        markMessagesAsRad(chatList[0]);
+        markMessagesAsRead(chatList[0]);
       }
     }
-  }, [chatList, chatPageName, createChatUrlParams, markMessagesAsRad, navigate]);
+  }, [chatList, chatPageName, createChatUrlParams, markMessagesAsRead, navigate]);
 
   return (
     <div className="app-side-menu">
       <div className="side-menu">
         <ul className="list-unstyled">
-          {Sidebar.map((data) => (
+          {sidebar.map((data) => (
             <li key={data.index} onClick={() => navigateToPage(data.name, data.url)}>
               <div className={`sidebar-link ${checkUrl(data.name) ? 'active' : ''} `}>
                 <div className="menu-icon">{fontAwesomeIcons[data.iconName]}</div>
@@ -118,4 +125,9 @@ const Sidebar = () => {
     </div>
   );
 };
+
+Sidebar.propTypes = {
+  onNavigate: PropTypes.func
+};
+
 export default Sidebar;

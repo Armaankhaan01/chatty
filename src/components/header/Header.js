@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import logo from '@assets/images/logo.svg';
-import { FaCaretDown, FaCaretUp, FaRegBell, FaRegEnvelope } from 'react-icons/fa';
+import { FaCaretDown, FaCaretUp, FaRegBell, FaRegEnvelope, FaBars, FaTimes } from 'react-icons/fa';
 import '@components/header/Header.scss';
 import Avatar from '@components/avatar/Avatar';
 import { Utils } from '@services/utils/utils.service';
@@ -40,6 +40,10 @@ const Header = () => {
   });
   const [messageCount, setMessageCount] = useState(0);
   const [messageNotifications, setMessageNotifications] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Determine if we're on mobile
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 720);
 
   const messageRef = useRef(null);
   const settingsRef = useRef(null);
@@ -56,6 +60,23 @@ const Header = () => {
   const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
   const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
   const backgroundColor = `${environment === 'DEV' ? '#50b5ff' : environment === 'STG' ? '#e9710f' : ''}`;
+
+  // Handle screen resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 720);
+      // Close mobile menu when resizing to desktop
+      if (window.innerWidth > 720) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const getUserNotifications = async () => {
     try {
       const response = await notificationService.getUserNotifications();
@@ -104,6 +125,7 @@ const Header = () => {
       await chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
       navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
       setIsMessageActive(false);
+      setMobileMenuOpen(false);
       dispatch(getConversationList());
     } catch (error) {
       Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
@@ -119,6 +141,14 @@ const Header = () => {
     } catch (error) {
       Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
     }
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+    // Close all dropdowns when toggling mobile menu
+    setIsMessageActive(false);
+    setIsNotificationActive(false);
+    setIsSettingsActive(false);
   };
 
   useEffectOnce(() => {
@@ -155,7 +185,7 @@ const Header = () => {
       ) : (
         <div className="header-nav-wrapper" data-testid="header-wrapper">
           {isMessageActive && (
-            <div ref={messageRef}>
+            <div ref={messageRef} className={isMobile ? 'mobile-message-sidebar' : ''}>
               <MessageSidebar
                 profile={profile}
                 messageCount={messageCount}
@@ -196,17 +226,20 @@ const Header = () => {
                 )}
               </div>
             </div>
-            <div className="header-menu-toggle">
-              <span className="bar"></span>
-              <span className="bar"></span>
-              <span className="bar"></span>
+            <div className="header-menu-toggle" onClick={toggleMobileMenu}>
+              {mobileMenuOpen ? <FaTimes className="menu-icon" /> : <FaBars className="menu-icon" />}
             </div>
-            <ul className="header-nav">
+            <ul
+              className={`header-nav ${
+                isMobile && mobileMenuOpen ? 'show-mobile-nav' : isMobile ? 'hide-mobile-nav' : ''
+              }`}
+            >
               <li
                 className="header-nav-item active-item"
                 onClick={() => {
                   setIsMessageActive(false);
-                  setIsNotificationActive(true);
+                  setIsNotificationActive(!isNotificationActive);
+                  setIsSettingsActive(false);
                 }}
               >
                 <span className="header-list-name">
@@ -222,7 +255,7 @@ const Header = () => {
                     <li className="dropdown-li">
                       <Dropdown
                         height={300}
-                        style={{ right: '250px', top: '20px' }}
+                        style={{ right: isMobile ? '10px' : '250px', top: isMobile ? '70px' : '20px' }}
                         data={notifications}
                         notificationCount={notificationCount}
                         title="Notifications"
@@ -238,7 +271,7 @@ const Header = () => {
                 data-testid="message-list-item"
                 className="header-nav-item active-item"
                 onClick={() => {
-                  setIsMessageActive(true);
+                  setIsMessageActive(!isMessageActive);
                   setIsNotificationActive(false);
                   setIsSettingsActive(false);
                 }}
@@ -279,19 +312,19 @@ const Header = () => {
                     <li className="dropdown-li">
                       <Dropdown
                         height={300}
-                        style={{ right: '150px', top: '40px' }}
+                        style={{ right: isMobile ? '10px' : '150px', top: isMobile ? '70px' : '40px' }}
                         data={settings}
                         notificationCount={0}
                         title="Settings"
                         onLogout={onLogout}
-                        onNavigate={() => ProfileUtils.navigateToProfile(profile, navigate)}
+                        onNavigate={() => {
+                          ProfileUtils.navigateToProfile(profile, navigate);
+                          setMobileMenuOpen(false);
+                        }}
                       />
                     </li>
                   </ul>
                 )}
-                <ul className="dropdown-ul">
-                  <li className="dropdown-li"></li>
-                </ul>
               </li>
             </ul>
           </div>

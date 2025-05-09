@@ -219,7 +219,10 @@ const ChatList = () => {
                           ? 'active'
                           : ''
                       }`}
-                      onClick={() => addUsernameToUrlQuery(data)}
+                      onClick={() => {
+                        addUsernameToUrlQuery(data);
+                        dispatch(setSelectedChatUser({ isLoading: false, user: data.receiverUsername }));
+                      }}
                     >
                       <div className="avatar">
                         <Avatar

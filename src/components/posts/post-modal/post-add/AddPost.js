@@ -15,7 +15,7 @@ import { ImageUtils } from '@services/utils/image-utils.service';
 import Giphy from '@components/giphy/Giphy';
 import Spinner from '@components/spinner/Spinner';
 
-const AddPost = ({ selectedImage, selectedPostVideo }) => {
+const AddPost = ({ selectedImage, selectedPostVideo, clearSelectedPostImage, clearSelectedPostVideo }) => {
   const { gifModalIsOpen, feeling } = useSelector((state) => state.modal);
   const { gifUrl, image, privacy, video } = useSelector((state) => state.post);
   const { profile } = useSelector((state) => state.user);
@@ -32,8 +32,7 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
   const [textAreaBackground, setTextAreaBackground] = useState('#ffffff');
   const [selectedPostImage, setSelectedPostImage] = useState();
   const [selectedVideo, setSelectedVideo] = useState();
-
-  const [postData, setPostData] = useState({
+  const defaultPostData = {
     post: '',
     bgColor: textAreaBackground,
     privacy: '',
@@ -42,7 +41,8 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
     profilePicture: '',
     image: '',
     video: ''
-  });
+  };
+  const [postData, setPostData] = useState(defaultPostData);
   const [disable, setDisable] = useState(true);
 
   const maxNumberOfCharacters = 500;
@@ -69,6 +69,12 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
   };
 
   const closePostModal = () => {
+    setHasVideo(false);
+    setSelectedVideo(null);
+    clearSelectedPostImage?.();
+    clearSelectedPostVideo?.();
+    setPostData(defaultPostData);
+    setPostImage('');
     PostUtils.closePostModal(dispatch);
   };
 
@@ -124,16 +130,14 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
           dispatch
         );
         if (response && response?.data?.message) {
-          setHasVideo(false);
-          PostUtils.closePostModal(dispatch);
+          closePostModal();
         }
       } else {
         const response = await postService.createPost(postData);
         if (response) {
           setApiResponse('success');
           setLoading(false);
-          setHasVideo(false);
-          PostUtils.closePostModal(dispatch);
+          closePostModal();
         }
       }
     } catch (error) {
@@ -164,7 +168,7 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
       PostUtils.postInputData(imageInputRef, postData, '', setPostData);
     } else if (video) {
       setHasVideo(true);
-      setPostImage(video);
+      setSelectedVideo(video);
       PostUtils.postInputData(imageInputRef, postData, '', setPostData);
     }
   }, [gifUrl, image, postData, video]);
@@ -313,7 +317,9 @@ const AddPost = ({ selectedImage, selectedPostVideo }) => {
 
 AddPost.propTypes = {
   selectedImage: PropTypes.any,
-  selectedPostVideo: PropTypes.any
+  selectedPostVideo: PropTypes.any,
+  clearSelectedPostImage: PropTypes.func,
+  clearSelectedPostVideo: PropTypes.func
 };
 
 export default AddPost;

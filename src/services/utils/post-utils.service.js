@@ -18,8 +18,8 @@ export class PostUtils {
   }
 
   static closePostModal(dispatch) {
-    dispatch(closeModal());
     dispatch(clearPost());
+    dispatch(closeModal());
   }
 
   static clearImage(postData, post, inputRef, dispatch, setSelectedPostImage, setPostImage, setPostData) {

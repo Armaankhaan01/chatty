@@ -65,7 +65,14 @@ function PostForm() {
 
   return (
     <>
-      {isOpen && type === 'add' && <AddPost selectedImage={selectedPostImage} selectedPostVideo={selectedPostVideo} />}
+      {isOpen && type === 'add' && (
+        <AddPost
+          selectedImage={selectedPostImage}
+          selectedPostVideo={selectedPostVideo}
+          clearSelectedPostImage={() => setSelectedPostImage(null)}
+          clearSelectedPostVideo={() => setSelectedPostVideo(null)}
+        />
+      )}
       {isOpen && type === 'edit' && (
         <EditPost selectedImage={selectedPostImage} selectedPostVideo={selectedPostVideo} />
       )}

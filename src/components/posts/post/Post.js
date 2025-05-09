@@ -12,7 +12,7 @@ import { find } from 'lodash';
 import CommentInputBox from '../comments/comment-input/CommentInputBox';
 import useLocalStorage from '@hooks/useLocalStorage';
 import CommentsModal from '../comments/comments-modal/CommentsModal';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ImageModal from '@components/image-modal/ImageModal';
 import { ImageUtils } from '@services/utils/image-utils.service';
 import Dialog from '@components/dialog/Dialog';
@@ -28,6 +28,7 @@ const Post = ({ post, showIcons }) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [backgroundImageColor, setBackgroundImageColor] = useState('');
+  const videoRef = useRef(null);
   const dispatch = useDispatch();
   const getFeeling = (name) => {
     const feeling = find(feelingsList, (data) => data.name === name);
@@ -76,6 +77,32 @@ const Post = ({ post, showIcons }) => {
   useEffect(() => {
     getBackgroundImageColor(post);
   }, [post]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (video) {
+          if (entry.isIntersecting) {
+            video.play();
+          } else {
+            video.pause();
+          }
+        }
+      },
+      { threshold: 0.5 } // video is 50% in view
+    );
+
+    if (video) {
+      observer.observe(video);
+    }
+
+    return () => {
+      if (video) {
+        observer.unobserve(video);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -187,9 +214,9 @@ const Post = ({ post, showIcons }) => {
                   style={{ height: '600px', backgroundColor: '#000000' }}
                 >
                   <video
+                    ref={videoRef}
                     width="100%"
                     height="600px"
-                    autoPlay={true}
                     controls
                     src={`${Utils.getVideo(post.videoId, post.videoVersion)}`}
                   />

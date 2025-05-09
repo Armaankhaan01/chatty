@@ -171,6 +171,7 @@ const BackgroundHeader = ({
                     ref={profileImageRef}
                     name="profile"
                     type="file"
+                    accept=".png,.jpg,.jpeg"
                     className="inputFile"
                     onClick={() => {
                       if (profileImageRef.current) {
@@ -201,6 +202,7 @@ const BackgroundHeader = ({
                       backgroundFileRef.current.value = null;
                     }
                   }}
+                  accept=".png,.jpg,.jpeg"
                   handleChange={(event) => {
                     setSelectedBackground(URL.createObjectURL(event.target.files[0]));
                     selectedFileImage(event.target.files[0], 'background');

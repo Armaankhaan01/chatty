@@ -18,7 +18,7 @@ const Login = () => {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [alertType, setAlertType] = useState('');
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
   const [setStoredUsername] = useLocalStorage('username', 'set');
   const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
   const [pageReload] = useSessionStorage('pageReload', 'set');
@@ -33,6 +33,7 @@ const Login = () => {
         username,
         password
       });
+      console.log(result);
       setLoggedIn(keepLoggedIn);
       setStoredUsername(username);
       setHasError(false);
@@ -48,6 +49,8 @@ const Login = () => {
 
   useEffect(() => {
     if (loading && !user) return;
+    console.log(user);
+
     if (user) navigate('/app/social/streams');
   }, [loading, user, navigate]);
 

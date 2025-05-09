@@ -15,6 +15,7 @@ import { followerService } from '@services/api/followers/follower.service';
 import { PostUtils } from '@services/utils/post-utils.service';
 import { addReactions } from '@redux/reducers/post/user-post-reaction.reducer';
 import useLocalStorage from '@hooks/useLocalStorage';
+import { useWindowSize } from '@hooks/useWindowSize';
 
 const Streams = () => {
   const allPosts = useSelector((state) => state.allPosts);
@@ -25,6 +26,8 @@ const Streams = () => {
   const [totalPostsCount, setTotalPostsCount] = useState(0);
   const storedUsername = useLocalStorage('username', 'get');
   const [deleteSelectedPostId] = useLocalStorage('selectedPostId', 'delete');
+  const { width } = useWindowSize();
+  const isMobile = width <= 768;
 
   const bodyRef = useRef(null);
   const bottomLineRef = useRef();
@@ -103,11 +106,14 @@ const Streams = () => {
           <Posts allPosts={posts} postsLoading={loading} userFollowing={following} />
           <div style={{ marginBottom: '50px', height: '50px' }} ref={bottomLineRef}></div>
         </div>
-        <div className="streams-suggestions">
-          <Suggestions />
-        </div>
+        {!isMobile && (
+          <div className="streams-suggestions">
+            <Suggestions />
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
 export default Streams;

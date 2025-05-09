@@ -22,6 +22,7 @@ const Input = forwardRef((props, ref) => (
       onBlur={props.onBlur}
       className={`form-input ${props.className}`}
       style={props.style}
+      accept={props.accept}
       autoComplete="false"
     />
   </div>
@@ -39,6 +40,7 @@ Input.propTypes = {
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
+  accept: PropTypes.string,
   style: PropTypes.object
 };
 

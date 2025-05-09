@@ -1,5 +1,6 @@
 import { addNotification, clearNotification } from '@redux/reducers/notifications/notifications.reducer';
 import { addUser, clearUser } from '@redux/reducers/user/user.reducer';
+import { authService } from '@services/api/auth/auth.service';
 import { APP_ENVIRONMENT } from '@services/axios';
 import { avatarColors } from '@services/utils/static.data';
 import { floor, random, some, findIndex } from 'lodash';
@@ -32,14 +33,15 @@ export class Utils {
 
   static dispatchUser(result, pageReload, dispatch, setUser) {
     pageReload(true);
-    dispatch(addUser({ token: result.data.token, profile: result.data.user }));
-    setUser(result.data.user);
+    dispatch(addUser({ token: result.token, profile: result.user }));
+    setUser(result.user);
   }
 
   static clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedIn }) {
     dispatch(clearUser());
     dispatch(clearNotification());
     deleteStorageUsername();
+    authService.clearToken();
     deleteSessionPageReload();
     setLoggedIn(false);
   }
@@ -151,9 +153,13 @@ export class Utils {
   }
 
   static renameFile(element) {
-    const fileName = element.name.split('.').slice(0, -1).join('.');
-    const blob = element.slice(0, element.size, '/image/png');
-    const newFile = new File([blob], `${fileName}.png`, { type: '/image/png' });
+    const fileExtension = element.name.split('.').pop();
+    const fileName = element.name.split('.').slice(0, -1).join('.') || 'file';
+    const mimeType = element.type || 'application/octet-stream';
+
+    const blob = element.slice(0, element.size, mimeType);
+    const newFile = new File([blob], `${fileName}.${fileExtension}`, { type: mimeType });
+
     return newFile;
   }
 }

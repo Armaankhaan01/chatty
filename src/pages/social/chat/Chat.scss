@@ -4,7 +4,8 @@
   min-width: 60vw;
   margin: auto;
   margin-bottom: 60px;
-overflow: hidden;
+  overflow: hidden;
+
   &-content {
     margin-top: 20px;
     display: grid;
@@ -24,26 +25,95 @@ overflow: hidden;
       border-right: 1px solid var(--white-4);
       padding: 0 15px;
       height: 100%;
+      transition: transform 0.3s ease;
+
+      &.hide {
+        display: none;
+      }
     }
 
     &-conversation {
       grid-area: message;
       flex-grow: 1;
       width: 100%;
+      position: relative;
+
+      &.full-width {
+        grid-column: 1 / span 2;
+      }
 
       .no-chat {
         color: var(--black-3);
         font-weight: 700;
         font-size: 18px;
-        position: absolute;
-        background-color: var(--white-1);
-        max-width: calc(1152px - 300px);
-        width: 100%;
         display: flex;
         justify-content: center;
         height: 100%;
-        max-height: calc(100vh - 120px);
         align-items: center;
+      }
+
+      .toggle-chat-list {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 10;
+        background-color: var(--white-1);
+        border: 1px solid var(--white-4);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        &:hover {
+          background-color: var(--white-2);
+        }
+      }
+    }
+  }
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .private-chat-wrapper {
+    height: calc(100vh - 100px);
+    min-width: 100%;
+    margin-bottom: 20px;
+
+    &-content {
+      margin-top: 10px;
+      grid-template-columns: 1fr;
+      grid-template-areas: 'message';
+
+      &-side {
+        position: absolute;
+        width: 100%;
+        max-width: 100%;
+        z-index: 100;
+        background-color: var(--white-1);
+        height: 100%;
+
+        &.show {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+/* For tablet sizes */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .private-chat-wrapper {
+    min-width: 90%;
+
+    &-content {
+      grid-template-columns: 250px 1fr;
+
+      &-side {
+        flex-basis: 250px;
       }
     }
   }
